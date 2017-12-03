@@ -48,10 +48,34 @@ app.post('/signUp', function (req, res, next) {
 
 })
 
-app.get('/test', function (req, res, next) {
-	res.json({
-		title: 'dingding'
+
+// 登录
+
+app.post('/signIn', function (req, res, next) {
+	var _user = req.body
+	
+	Users.findOne({name: _user.name}, function (err, user) {
+		if (err) console.log(err)
+
+		user.comparePassword(_user.password, function (err, isMatch) {
+			if (err) console.log(err)
+
+			if(isMatch) {
+				res.json({
+					dec: 'success',
+					code: '200',
+					msg: user.name
+				})
+			}else {
+				res.json({
+					dec: 'fail',
+					code: '201',
+					msg: '登录失败'
+				})
+			}
+		})
 	})
+	
 })
 
 // 电影列表页面

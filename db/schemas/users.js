@@ -35,13 +35,19 @@ UsersSchema.pre('save', function (next) {
         bcrypt.hash(user.password, salt, function(err, hash) {
             if (err) return next(err)
             user.password = hash
+            next()
         })
     })
-    next()
+    // next()
 })
 
-UsersSchema.statics.findName = function (name, cb) {
-    return this.findOne({name: name}, cb)
+UsersSchema.methods = {
+    comparePassword: function (_psd, cb) {
+        bcrypt.compare(_psd, this.password, function (err, isMatch) {
+            if (err) return cb(err)
+            cb(null, isMatch)
+        })
+    }
 }
 
 module.exports = UsersSchema
