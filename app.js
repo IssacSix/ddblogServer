@@ -2,6 +2,7 @@ var express = require('express');
 var path = require('path');
 var favicon = require('serve-favicon');
 var logger = require('morgan');
+var cors = require('cors')
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 var session = require('express-session')
@@ -16,13 +17,8 @@ mongoose.connect(dbUrl, { useMongoClient: true}, function (err) {
 })
 mongoose.set('debug', true)
 
-// view engine setup
-/* app.set('views', path.join(__dirname, 'views/pages'));
-app.set('view engine', 'jade'); */
-
-// uncomment after placing your favicon in /public
-
 // app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));
+
 app.use(logger('dev'));
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
@@ -41,13 +37,14 @@ app.use(session({
 }))
 
 // 路由配置
-var webRoutes = require('./web_routers')
+var corsOptions = {
+  origin: 'http://192.168.0.101:8080',
+  credentials: true,
+  optionsSuccessStatus: 200
+}
+app.use(cors(corsOptions))
+var webRoutes = require('./config/routes')
 app.use('/', webRoutes)
-
-
-// API 配置
-var API_config = require('./API_config')
-app.use('/', API_config)
 
 
 // catch 404 and forward to error handler
