@@ -56,23 +56,59 @@ exports.signIn = function (req, res, next) {
     Users.findOne({ name: _user.name }, function (err, user) {
         if (err) console.log(err)
 
-        user.comparePassword(_user.password, function (err, isMatch) {
-            if (err) console.log(err)
+        if (user) {
+            user.comparePassword(_user.password, function (err, isMatch) {
+                if (err) console.log(err)
 
-            if (isMatch) {
-                req.session.user = user
-                res.json({
-                    dec: 'success',
-                    code: '200',
-                    msg: user.name
-                })
-            } else {
-                res.json({
-                    dec: 'fail',
-                    code: '201',
-                    msg: '登录失败'
-                })
-            }
-        })
+                if (isMatch) {
+                    req.session.user = user
+                    res.json({
+                        dec: 'success',
+                        code: '200',
+                        msg: user.name
+                    })
+                } else {
+                    res.json({
+                        dec: 'fail',
+                        code: '201',
+                        msg: '登录失败'
+                    })
+                }
+            })
+        } else {
+            res.json({
+                dec: 'fail',
+                code: '201',
+                msg: '登录失败'
+            })
+        }
     })
+}
+
+// 登出
+exports.logout = function (req, res, next) {
+    delete req.session.user
+    res.json({
+        dec: 'success',
+        code: '200',
+        msg: '退出登录'
+    })
+}
+
+// 登录权限
+exports.signInRequire = function (req, res, next) {
+    var _user = req.session.user
+    if (!_user) {
+        return 
+    }
+    next()
+}
+
+// 管理权限
+exports.adminReruire = function (req, res, next) {
+    var _user = req.session.user
+    if (_user.role <= 5) {
+        return
+    }
+    next()
 }

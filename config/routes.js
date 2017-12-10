@@ -8,9 +8,10 @@ router.post('/isLogin', User.isLogin)
 router.post('/signUpName', User.signUpName)
 router.post('/signUp', User.signUp)
 router.post('/signIn', User.signIn)
+router.post('/logout', User.logout)
 
 // Movies Routes
-router.get('/movieList', Movie.movieList)
+router.get('/movieList', User.signInRequire, User.adminReruire, Movie.movieList)
 router.post('/creatNew', Movie.creatNew)
 router.post('/movieById', Movie.movieById)
 

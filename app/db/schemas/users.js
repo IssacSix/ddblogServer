@@ -9,6 +9,10 @@ var UsersSchema = new Schema({
         type: String
     },
     password: String,
+    role: {
+        type: Number,
+        default: 0
+    },
     meta: {
         createdAt: {
             type: Date,
