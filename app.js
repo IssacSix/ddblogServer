@@ -4,13 +4,17 @@ var favicon = require('serve-favicon');
 var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
+var session = require('express-session')
+var mongoStore = require('connect-mongo')(session);
 var mongoose = require('mongoose')
 
 var app = express();
+var dbUrl = 'mongodb://127.0.0.1:27017/movies'
 
-mongoose.connect('mongodb://127.0.0.1:27017/movies', { useMongoClient: true}, function (err) {
+mongoose.connect(dbUrl, { useMongoClient: true}, function (err) {
   if (err) console.log(err)
 })
+mongoose.set('debug', true)
 
 // view engine setup
 /* app.set('views', path.join(__dirname, 'views/pages'));
@@ -25,6 +29,16 @@ app.use(bodyParser.json());
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'bower_components')));
 
+// 设置session
+app.use(session({
+  secret: 'ddblog',
+  store: new mongoStore({
+    url: dbUrl,
+    collection: "sessions"
+  }),
+  resave: false,
+  saveUninitialized: true,
+}))
 
 // 路由配置
 var webRoutes = require('./web_routers')

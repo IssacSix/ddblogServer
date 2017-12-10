@@ -16,7 +16,8 @@
   },
   "devDependencies": {
     "moment": "^2.19.2",
-    "mongoose": "^4.13.1"
+    "mongoose": "^4.13.1",
+    "morgan": "^1.9.0"
   },
   "main": "app.js",
   "author": "issacsix",

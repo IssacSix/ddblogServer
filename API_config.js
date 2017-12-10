@@ -1,13 +1,18 @@
-var express = require('express');
-var cors = require('cors');
-var router = express.Router();
+var express = require('express')
+var cors = require('cors')
+var router = express.Router()
 var _ = require('underscore')
 var Movie = require('./db/models/movies')
 var Users = require('./db/models/users')
 
 var app = express()
 
-app.use(cors())
+var corsOptions = {
+	origin: 'http://192.168.0.101:8080',
+	credentials: true,
+	optionsSuccessStatus: 200
+}
+app.use(cors(corsOptions))
 
 // 注册
 
@@ -37,7 +42,7 @@ app.post('/signUp', function (req, res, next) {
 	var _user = req.body
 	
 	var user = new Users(_user)
-	user.save(function (err, user){
+	user.save(function (err, user) {
 		if (err) console.log(err)
 		res.json({
 			dec: 'success',
@@ -45,9 +50,19 @@ app.post('/signUp', function (req, res, next) {
 			msg: user.name
 		})
 	})
-
 })
 
+// 判断是否已经登录
+app.post('/isLogin', function (req, res, next) {
+	var _user = req.session.user
+	if(_user) {
+		res.json({
+			dec: 'success',
+			code: '200',
+			msg: _user.name
+		})
+	}
+})
 
 // 登录
 
@@ -61,6 +76,7 @@ app.post('/signIn', function (req, res, next) {
 			if (err) console.log(err)
 
 			if(isMatch) {
+				req.session.user = user
 				res.json({
 					dec: 'success',
 					code: '200',
@@ -118,23 +134,23 @@ app.post('/creatNew', function (req, res, next) {
 			})
         })
     } else {
-			Movie.findById(id, function(err, movie) {
-				if(err) console.log(err)
-				else {
-					_movie = _.extend(movie, data)
-					_movie.save(function (err, movie) {
-						if (err) console.log(err)
-					})
-				}
-			})
-			res.json({
-				dec: 'success',
-				code: 200,
-				msg: {
-					id: id
-				}
-			})
-		}
+		Movie.findById(id, function(err, movie) {
+			if(err) console.log(err)
+			else {
+				_movie = _.extend(movie, data)
+				_movie.save(function (err, movie) {
+					if (err) console.log(err)
+				})
+			}
+		})
+		res.json({
+			dec: 'success',
+			code: 200,
+			msg: {
+				id: id
+			}
+		})
+	}
 })
 
 // 根据id获取电影
