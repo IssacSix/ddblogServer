@@ -10,15 +10,18 @@ var mongoStore = require('connect-mongo')(session);
 var mongoose = require('mongoose')
 
 var app = express();
-var dbUrl = 'mongodb://127.0.0.1:27017/movies'
 
-mongoose.connect(dbUrl, { useMongoClient: true}, function (err) {
+// 添加配置文件
+var config = require('config.json')('./config.json')
+var dbUrl = 'mongodb://' + config.mongo.host + ':' + config.mongo.port + '/' + config.mongo.db
+
+// 数据库连接
+mongoose.connect(dbUrl, { useMongoClient: true }, function (err) {
   if (err) console.log(err)
 })
 mongoose.set('debug', true)
 
-// app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));
-
+// express 中间件设置
 app.use(logger('dev'));
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
@@ -27,7 +30,7 @@ app.use(express.static(path.join(__dirname, 'bower_components')));
 
 // 设置session
 app.use(session({
-  secret: 'ddblog',
+  secret: config.secret,
   store: new mongoStore({
     url: dbUrl,
     collection: "sessions"
@@ -38,7 +41,7 @@ app.use(session({
 
 // 路由配置
 var corsOptions = {
-  origin: 'http://192.168.0.101:8080',
+  origin: config.origin,
   credentials: true,
   optionsSuccessStatus: 200
 }
@@ -47,15 +50,15 @@ var webRoutes = require('./config/routes')
 app.use('/', webRoutes)
 
 
-// catch 404 and forward to error handler
-app.use(function(req, res, next) {
+
+// 错误异常处理
+app.use(function (req, res, next) {
   var err = new Error('Not Found');
   err.status = 404;
   next(err);
 });
 
-// error handler
-app.use(function(err, req, res, next) {
+app.use(function (err, req, res, next) {
   // set locals, only providing error in development
   res.locals.message = err.message;
   res.locals.error = req.app.get('env') === 'development' ? err : {};

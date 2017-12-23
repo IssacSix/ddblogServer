@@ -1,7 +1,8 @@
 {
     "name": "ddblogServer",
-    "secret": "d_d",
-    "domain": "10.4.110.11",
+    "secret": "ddblog",
+    "domain": "192.168.0.104",
+    "origin": "http://192.168.0.104:8080",
     "cookie": {
         "domain": "10.4.110.11",
         "expire": "864000000"
@@ -10,7 +11,7 @@
     "session_redis_refresh": "session",
     "mongo": {
         "host": "127.0.0.1",
-        "post": "27017",
+        "port": "27017",
         "db": "movies"
     }
 }
