@@ -2,9 +2,9 @@
     "name": "ddblogServer",
     "secret": "ddblog",
     "domain": "192.168.0.104",
-    "origin": "http://192.168.0.104:8080",
+    "origin": "http://10.4.110.78:8080",
     "cookie": {
-        "domain": "10.4.110.11",
+        "domain": "10.4.110.78",
         "expire": "864000000"
     },
     "port": 3000,

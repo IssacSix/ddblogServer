@@ -5,7 +5,7 @@ var logger = require('morgan');
 var cors = require('cors')
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
-var session = require('express-session')
+var session = require('express-session');
 var mongoStore = require('connect-mongo')(session);
 var mongoose = require('mongoose')
 
